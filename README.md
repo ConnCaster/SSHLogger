@@ -5,7 +5,7 @@
 An utility for monitoring the execution of remote commands via SSH on your Linux PC/server and commands in outgoing SSH-connections by strace or ptrace.
 
 ### Motivation
-My main idea is to create programm, which will be able to detect and interact with SSH-connections to/from your Linux PC/server. This interaction is to detect new ssh-connections in runtime or scan already opened connections at the program start moment and then hidely and safely attach to their processes and log all commands, sending in these connections. It can be used by administrators of Linux systems, who need to detect illegal activity by ssh to/from their systems and others.
+My main idea is to create programm, which will be able to detect and interact with SSH-connections to/from your Linux PC/server. This interaction is to detect new ssh-connections in runtime or scan already opened connections at the program start moment and then hidely and safely attach to their processes and log all commands, sending in these connections. It can be used by administrators of Linux systems, who need to detect illegal activity by ssh to/from their systems.
 
 
 ### Already implemented features:
