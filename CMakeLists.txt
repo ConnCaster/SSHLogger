@@ -10,7 +10,7 @@ FIND_PACKAGE(Boost 1.65 REQUIRED COMPONENTS filesystem regex program_options)
 
 add_definitions(-DDEBUG=0)
 
-add_executable(SSH_Logger src/main.cpp src/strace.cpp src/ptrace.cpp src/parsing.cpp src/tracer.cpp src/process_logger.cpp src/process.cpp)
+add_executable(SSH_Logger src/main.cpp src/strace.cpp src/ptrace.cpp src/parsing.cpp src/tracer.cpp src/process_logger.cpp src/process.cpp src/network/server.cpp includes/network/server.hpp)
 target_include_directories(SSH_Logger PUBLIC includes)
 target_link_libraries(SSH_Logger pthread Boost::regex Boost::filesystem Boost::program_options)
 
