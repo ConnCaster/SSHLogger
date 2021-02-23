@@ -1,4 +1,4 @@
-# SSH_Monitor for GNU/Linux
+# SSH_Logger for GNU/Linux
 
 
 ### Summary
