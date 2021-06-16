@@ -2,6 +2,7 @@
 #include <sys/stat.h>
 
 #include "process_logger.hpp"
+#include "network/server.hpp"
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -79,6 +80,14 @@ int main(int argc, char **argv) {
         std::cout << desc << std::endl;
         return 1;
     }
+
+    boost::asio::io_service ios{};
+    Server server{ios, 5000};
+    server.do_start();
+    ios.run();
+//    std::thread t_server(&Server::do_accept, &server);
+//    t_server.detach();
+
 
     if (vm.count("daemon")) {
         becomeDaemon(vm, sleep_time);
