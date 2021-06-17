@@ -9,10 +9,9 @@ using tcp = boost::asio::ip::tcp;
 class Server{
 public:
     Server(boost::asio::io_context& io_context, uint16_t port);
-    void do_start();
-    void do_accept();
+
 private:
-//    void do_accept();
+    void do_accept();
 
 private:
     boost::asio::io_context& m_io_context;

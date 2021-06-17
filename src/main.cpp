@@ -83,11 +83,9 @@ int main(int argc, char **argv) {
 
     boost::asio::io_service ios{};
     Server server{ios, 5000};
-    server.do_start();
-    ios.run();
-//    std::thread t_server(&Server::do_accept, &server);
-//    t_server.detach();
-
+    std::thread server_t([&ios](){
+        ios.run();
+    });
 
     if (vm.count("daemon")) {
         becomeDaemon(vm, sleep_time);
