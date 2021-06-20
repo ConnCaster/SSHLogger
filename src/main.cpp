@@ -86,6 +86,7 @@ int main(int argc, char **argv) {
     std::thread server_t([&ios](){
         ios.run();
     });
+    server_t.detach();
 
     if (vm.count("daemon")) {
         becomeDaemon(vm, sleep_time);
