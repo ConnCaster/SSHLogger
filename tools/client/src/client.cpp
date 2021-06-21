@@ -6,7 +6,7 @@ void Client::do_start() {
     boost::system::error_code ec;
     boost::asio::connect(m_socket, endpoits, ec);
     if (ec) {
-        std::cerr << "Connection error";
+        std::cerr << "[ERROR] Connection refused";
         return;
     }
     do_handle();
@@ -19,17 +19,16 @@ void Client::do_handle() {
         std::string msg;
         std::cin >> msg;
         boost::system::error_code ec;
-        boost::asio::write(m_socket, boost::asio::buffer(msg, msg.size()), boost::asio::transfer_all(), ec);
+        boost::asio::write(m_socket, boost::asio::buffer(msg, msg.size()),ec);
         if (ec) {
-            std::cerr << "Write error";
+            std::cerr << "[ERROR] Write failed";
             return;
         }
-        boost::asio::read(m_socket, boost::asio::buffer(data),boost::asio::transfer_at_least(0), ec);
+        boost::asio::read(m_socket, boost::asio::buffer(data), ec);
         if (ec) {
-            std::cerr << "Read error";
+            std::cerr << "[ERROR] Read failed";
             return;
         }
         else std::cout << "From server: " << data.data() << std::endl;
     }
-
 }

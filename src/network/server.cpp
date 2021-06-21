@@ -10,11 +10,9 @@ Server::Server(boost::asio::io_context &io_context, uint16_t port)
 void Server::do_accept() {
     m_acceptor.async_accept([this](const boost::system::error_code& err, tcp::socket socket){
         if (!err) {
-            std::cout << "accepted" << std::endl;
+            auto ptr = std::make_shared<Connection>(Connection{std::move(socket)});
+            ptr->do_start();
         }
         do_accept();
     });
 }
-
-
-

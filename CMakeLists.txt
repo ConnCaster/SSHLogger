@@ -11,16 +11,40 @@ find_package(Boost 1.65 REQUIRED COMPONENTS filesystem regex program_options)
 
 add_definitions(-DDEBUG=0)
 
-add_executable(SSH_Logger src/main.cpp
+# ------------- SSH_logger -------------
+add_executable(SSH_Logger
+        src/main.cpp
         src/strace.cpp
         src/ptrace.cpp
         src/parsing.cpp
         src/tracer.cpp
         src/process_logger.cpp
         src/process.cpp
-        src/network/server.cpp)
-target_include_directories(SSH_Logger PUBLIC includes)
+        src/network/server.cpp
+        src/network/connection.cpp
+        )
+target_include_directories(SSH_Logger
+        PUBLIC
+        includes
+        dep/msgpack/include
+        )
 target_link_libraries(SSH_Logger PUBLIC pthread Boost::regex Boost::filesystem Boost::program_options)
 
+
+# ------------- Client to send msgpack data to ssh_logger -------------------
+add_executable(client
+        tools/client/main.cpp
+        tools/client/src/client.cpp
+        )
+target_include_directories(client
+        PUBLIC
+        tools/client/includes
+        dep/msgpack/include
+        )
+target_link_libraries(client
+        PUBLIC
+        pthread
+        )
+
+#  ------------- Tests -------------
 add_subdirectory(tests)
-add_subdirectory(tools/client)

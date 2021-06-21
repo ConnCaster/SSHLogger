@@ -4,11 +4,17 @@
 #include <boost/asio.hpp>
 #include <iostream>
 
+#include <network/connection.hpp>
+#include <msgpack.hpp>
+
 using tcp = boost::asio::ip::tcp;
 
 class Server{
 public:
     Server(boost::asio::io_context& io_context, uint16_t port);
+    ~Server() {
+      std::cout << "Server dtor\n";
+    };
 
 private:
     void do_accept();
