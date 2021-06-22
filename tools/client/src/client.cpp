@@ -13,22 +13,21 @@ void Client::do_start() {
 }
 
 void Client::do_handle() {
-    std::array<uint8_t, 10> data{};
     while (true) {
         std::cout << "Enter message: ";
         std::string msg;
         std::cin >> msg;
         boost::system::error_code ec;
-        boost::asio::write(m_socket, boost::asio::buffer(msg, msg.size()),ec);
+        boost::asio::write(m_socket, boost::asio::buffer(msg),ec);
         if (ec) {
             std::cerr << "[ERROR] Write failed";
             return;
         }
-        boost::asio::read(m_socket, boost::asio::buffer(data), ec);
+        boost::asio::read(m_socket, boost::asio::buffer(msg),ec);
         if (ec) {
             std::cerr << "[ERROR] Read failed";
             return;
         }
-        else std::cout << "From server: " << data.data() << std::endl;
+        else std::cout << "From server: " << msg.data() << std::endl;
     }
 }
